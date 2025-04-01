@@ -38,6 +38,11 @@ app.use('/api/mentorships', mentorshipRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/users', userRoutes); // Ensure this line is present
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK' });
+});
+
 // Error handling middleware
 app.use(errorHandler);
 
