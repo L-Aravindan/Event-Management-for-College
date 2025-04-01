@@ -214,7 +214,7 @@ const EventDetail = () => {
                                             Apply for Event
                                         </button>
                                     )}
-                                    {hasApplied && !hasMarkedAttendance && !isEventExpired(event.date, event.time) && (
+                                    {hasApplied && !hasMarkedAttendance && (
                                         <div className="flex-1 space-y-4">
                                             <input
                                                 type="text"
