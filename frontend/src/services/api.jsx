@@ -1,7 +1,9 @@
 import axios from 'axios';
 
 // Base URL for your backend API
-const API_BASE_URL = 'http://localhost:5000/api'; // Update this if deploying
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+    ? 'https://your-backend-domain.onrender.com/api'
+    : 'http://localhost:5000/api';
 
 axios.interceptors.response.use(
     (response) => response,
