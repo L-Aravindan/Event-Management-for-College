@@ -43,7 +43,17 @@ const AdminEventDetail = () => {
   const fetchEventRequests = async () => {
     try {
       const response = await apiClient.get(`/admin/events/${eventId}/requests`);
+      console.log('Event requests:', response.data); // Debug log
       setRequests(response.data);
+      
+      // Update stats
+      setStats(prevStats => ({
+        ...prevStats,
+        totalApplicants: response.data.length,
+        approved: response.data.filter(r => r.status === "approved").length,
+        pending: response.data.filter(r => r.status === "pending").length,
+        rejected: response.data.filter(r => r.status === "rejected").length
+      }));
     } catch (err) {
       console.error("Error fetching event requests:", err);
     }
@@ -85,6 +95,8 @@ const AdminEventDetail = () => {
           description: eventResponse.data.description,
           club: eventResponse.data.club,
         });
+
+        await fetchEventRequests();
       } catch (err) {
         console.error("Error fetching data:", err);
         alert("Failed to fetch data");

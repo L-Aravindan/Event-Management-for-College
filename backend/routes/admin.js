@@ -286,12 +286,15 @@ router.put('/attendance/override/:eventId/:studentId', authMiddleware, isAdmin, 
     }
 });
 
-// Get all requests for a specific event
+// Update the admin route for getting event requests
 router.get('/events/:eventId/requests', authMiddleware, isAdmin, async (req, res) => {
     try {
         const { eventId } = req.params;
         const event = await Event.findById(eventId)
-            .populate('applicants.studentId', 'name registerNumber department');
+            .populate({
+                path: 'applicants.studentId',
+                select: 'name registerNumber department email'
+            });
         
         if (!event) {
             return res.status(404).json({ error: 'Event not found' });
@@ -299,7 +302,11 @@ router.get('/events/:eventId/requests', authMiddleware, isAdmin, async (req, res
 
         const requests = event.applicants.map(applicant => ({
             studentId: applicant.studentId,
-            status: applicant.status
+            status: applicant.status,
+            eventId: event._id,
+            eventName: event.name,
+            date: event.date,
+            time: event.time
         }));
 
         res.json(requests);
