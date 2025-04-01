@@ -16,8 +16,12 @@ const StudentDetails = () => {
                 const [studentRes, eventsRes, attendanceRes] = await Promise.all([
                     apiClient.get(`/admin/users/${studentId}`),
                     apiClient.get(`/admin/users/${studentId}/event-requests`),
-                    apiClient.get(`/admin/users/${studentId}/attendance`) // New endpoint
+                    apiClient.get(`/admin/users/${studentId}/attendance`)
                 ]);
+
+                console.log('Student Response:', studentRes.data);
+                console.log('Events Response:', eventsRes.data);
+                console.log('Attendance Response:', attendanceRes.data);
 
                 setStudent(studentRes.data);
                 setEditedStudent(studentRes.data);
@@ -25,15 +29,21 @@ const StudentDetails = () => {
                 // Combine event data with attendance data
                 const eventsWithAttendance = eventsRes.data.map(event => ({
                     ...event,
-                    hasAttendance: attendanceRes.data.some(record => record.eventId === event.eventId)
+                    hasAttendance: attendanceRes.data.some(record => 
+                        record.eventId === (event._id || event.eventId)
+                    )
                 }));
+
                 setEvents(eventsWithAttendance);
             } catch (err) {
-                console.error('Error fetching student details:', err);
+                console.error('Error fetching student details:', err.response?.data || err.message);
                 alert('Failed to fetch student details');
             }
         };
-        fetchStudentDetails();
+
+        if (studentId) {
+            fetchStudentDetails();
+        }
     }, [studentId]);
 
     const handleEdit = () => {
@@ -194,7 +204,9 @@ const StudentDetails = () => {
                                         events.map((event) => (
                                             <div 
                                                 key={event._id}
-                                                className="bg-white/10 rounded-lg p-4 border border-white/10"
+                                                className={`bg-white/10 rounded-lg p-4 border border-white/10 ${
+                                                    event.hasAttendance ? 'border-green-500/30' : ''
+                                                }`}
                                             >
                                                 <h4 className="text-white font-medium mb-2">{event.name}</h4>
                                                 <div className="space-y-2 text-sm">
@@ -204,30 +216,15 @@ const StudentDetails = () => {
                                                             {new Date(event.date).toLocaleDateString('en-GB')}
                                                         </span>
                                                     </p>
-                                                    <p className="flex justify-between items-center">
+                                                    <p className="flex justify-between">
                                                         <span className="text-white/60">Status:</span>
-                                                        <select
-                                                            value={event.status}
-                                                            onChange={(e) => handleEventStatusChange(event._id, e.target.value)}
-                                                            className="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm"
-                                                        >
-                                                            <option value="pending" className="bg-black text-yellow-300">Pending</option>
-                                                            <option value="approved" className="bg-black text-green-300">Approved</option>
-                                                            <option value="rejected" className="bg-black text-red-300">Rejected</option>
-                                                        </select>
-                                                    </p>
-                                                    <p className="flex justify-between items-center">
-                                                        <span className="text-white/60">Attendance Override:</span>
-                                                        <select
-                                                            value={event.hasAttendance ? "present" : "absent"}
-                                                            onChange={(e) => handleAttendanceOverride(event._id, e.target.value === "present")}
-                                                            className={`bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm ${
-                                                                event.hasAttendance ? 'text-green-300' : 'text-red-300'
-                                                            }`}
-                                                        >
-                                                            <option value="present" className="bg-black text-green-300">Present</option>
-                                                            <option value="absent" className="bg-black text-red-300">Absent</option>
-                                                        </select>
+                                                        <span className={`px-2 py-1 rounded-full text-xs ${
+                                                            event.status === 'pending' ? 'bg-yellow-500/20 text-yellow-300' :
+                                                            event.status === 'approved' ? 'bg-green-500/20 text-green-300' :
+                                                            'bg-red-500/20 text-red-300'
+                                                        }`}>
+                                                            {event.status.charAt(0).toUpperCase() + event.status.slice(1)}
+                                                        </span>
                                                     </p>
                                                 </div>
                                             </div>

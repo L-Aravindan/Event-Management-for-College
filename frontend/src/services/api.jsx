@@ -5,11 +5,12 @@ const API_BASE_URL = process.env.NODE_ENV === 'production'
     : 'http://localhost:5000/api';
 
 const apiClient = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: import.meta.env.DEV 
+        ? 'http://localhost:5000/api'  // Development server
+        : 'https://event-management-for-college.onrender.com/api',  // Production server
     headers: {
-        'Content-Type': 'application/json',
-    },
-    withCredentials: true
+        'Content-Type': 'application/json'
+    }
 });
 
 // Add request interceptor

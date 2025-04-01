@@ -40,32 +40,44 @@ router.get('/users', authMiddleware, isAdmin, async (req, res) => {
     }
 });
 
-// Get all event requests for a student (Protected route for admin)
+// Get event requests for a student
 router.get('/users/:studentId/event-requests', authMiddleware, isAdmin, async (req, res) => {
     try {
         const { studentId } = req.params;
-        const events = await Event.find({ 'applicants.studentId': studentId })
-            .populate('facultyId', 'name email')
-            .select('name date time venue applicants');
+        // Get all events where the student is an applicant
+        const events = await Event.find({ 
+            'applicants.studentId': studentId 
+        }).populate('facultyId', 'name email');
 
-        const applications = events
-            .filter(event => !isEventExpired(event.date, event.time)) // Filter out expired events
-            .map(event => {
-                const applicant = event.applicants.find(app => app.studentId.toString() === studentId);
-                return {
-                    eventId: event._id,
-                    eventName: event.name,
-                    date: event.date,
-                    time: event.time,
-                    venue: event.venue,
-                    status: applicant.status,
-                    isExpired: false // Explicitly mark as not expired
-                };
-            });
+        // Format the response
+        const studentEvents = events.map(event => {
+            const applicant = event.applicants.find(app => 
+                app.studentId.toString() === studentId
+            );
+            return {
+                eventId: event._id,
+                name: event.name,
+                date: event.date,
+                time: event.time,
+                venue: event.venue,
+                status: applicant ? applicant.status : 'pending',
+                hasAttendance: false // Will be updated below
+            };
+        });
 
-        res.json(applications);
+        // Get attendance records
+        const attendanceRecords = await Attendance.find({ studentId });
+        
+        // Update hasAttendance for each event
+        studentEvents.forEach(event => {
+            event.hasAttendance = attendanceRecords.some(record => 
+                record.eventId.toString() === event.eventId.toString()
+            );
+        });
+
+        res.json(studentEvents);
     } catch (error) {
-        console.error('Error fetching event requests:', error);
+        console.error('Error fetching student event requests:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });
