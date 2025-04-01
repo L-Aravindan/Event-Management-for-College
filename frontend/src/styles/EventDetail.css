@@ -1,0 +1,240 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Event Detail Styling */
+.event-detail {
+    padding: 30px;
+    padding-top: 70px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 40px;
+    position: relative;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.event-header {
+    flex: 0 0 350px;
+}
+
+.event-header img {
+    width: 100%;
+    height: 450px;
+    object-fit: cover;
+    border-radius: var(--border-radius);
+    margin-bottom: 0;
+    transition: transform 0.3s ease;
+}
+
+.event-header img:hover {
+    transform: scale(1.05);
+}
+
+.event-content {
+    flex: 1;
+    background: var(--secondary-color);
+    padding: 25px;
+    border-radius: var(--border-radius);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    max-height: 450px;
+    overflow-y: auto;
+    transition: box-shadow var(--transition-speed);
+}
+
+.event-content:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.event-content h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+}
+
+.event-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.event-info p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.event-info p strong {
+    white-space: nowrap;
+}
+
+.event-description {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--glass-shadow);
+}
+
+.event-description h2 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+}
+
+.event-description p {
+    line-height: 1.6;
+    color: var(--text-color);
+}
+
+.apply-btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.apply-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.back-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 10px 20px;
+    font-size: 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.back-btn:hover {
+    background-color: #303f9f;
+}
+
+.back-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.event-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.generate-btn,
+.delete-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.generate-btn {
+    background: linear-gradient(90deg, #43c6ac, #4caf50);
+    color: white;
+}
+
+.delete-btn {
+    background: linear-gradient(90deg, #ff7e5f, #feb47b);
+    color: white;
+}
+
+.generate-btn:hover,
+.delete-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.attendance-marked {
+    background: rgba(76, 175, 80, 0.1);
+    color: var(--success-color);
+    padding: 15px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .event-content {
+        max-height: none;
+    }
+
+    .event-info {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .event-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .event-info p {
+        font-size: 1rem;
+    }
+
+    .back-btn {
+        top: 10px;
+        left: 10px;
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+
+    .back-btn svg {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .event-info {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .event-content h1 {
+        font-size: 1.5rem;
+    }
+
+    .event-info p {
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,67 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Chakra Petch', sans-serif;
+}
+
+/* Root Variables */
+:root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #0f3460;
+    --text-color: #e0e0e0;
+    --hover-color: #3a506b;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(255, 255, 255, 0.2);
+    --border-radius: 12px;
+    --transition-speed: 0.3s;
+}
+
+/* Body Styling */
+body {
+    font-family: 'Chakra Petch', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+}
+
+/* Student Layout */
+.student-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Navbar Glassmorphism */
+.navbar-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--glass-shadow);
+    padding: 15px 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Content Styling */
+.content {
+    flex: 1;
+    padding: 30px;
+    background: linear-gradient(135deg, #0f1a2e, var(--primary-color)); /* Gradient background */
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,245 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Root Variables */
+  :root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #0f3460;
+    --text-color: #e0e0e0;
+    --hover-color: #3a506b;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(255, 255, 255, 0.2);
+    --success-color: #4caf50;
+    --error-color: #f44336;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+  }
+  
+  /* Navbar Glassmorphism */
+  .navbar-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-shadow);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Content Styling */
+  .content {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--primary-color);
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+  }
+  
+  .student-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .student-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: var(--secondary-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .student-form input:focus {
+    border-color: var(--accent-color);
+    outline: none;
+  }
+  
+  .student-form button {
+    background: linear-gradient(90deg, #43c6ac, #4caf50); /* Green gradient */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px; /* Rounded corners like other buttons */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: fit-content; /* Button width matches content */
+    align-self: center; /* Center the button in the form */
+  }
+  
+  .student-form button:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 4px 8px rgba(67, 198, 172, 0.3); /* Soft green shadow */
+  }
+  
+  .error-message {
+    color: var(--error-color);
+    font-size: 0.9rem;
+    margin-top: -10px;
+    margin-bottom: 10px;
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .student-form input,
+    .student-form button {
+      font-size: 0.9rem;
+      padding: 8px;
+    }
+  }
+
+.add-mentored {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.content {
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    animation: slideIn 0.5s ease-out forwards;
+}
+
+.student-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.student-form input {
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    width: 100%;
+}
+
+.student-form input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.student-form button {
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+.student-form button:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+}
+
+h2 {
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 14px;
+    text-align: center;
+    margin-top: 5px;
+}
+
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes mentorFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.mentor-container {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: mentorFadeIn 0.3s ease-out forwards;
+}
+
+.mentor-list {
+    will-change: backdrop-filter;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.mentor-item {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: mentorFadeIn 0.3s ease-out forwards;
+}
+
+.mentor-list .mentor-item:nth-child(1) { animation-delay: 0s; }
+.mentor-list .mentor-item:nth-child(2) { animation-delay: 0.05s; }
+.mentor-list .mentor-item:nth-child(3) { animation-delay: 0.1s; }
+.mentor-list .mentor-item:nth-child(4) { animation-delay: 0.15s; }
+.mentor-list .mentor-item:nth-child(5) { animation-delay: 0.2s; }
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .content {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .student-form input,
+    .student-form button {
+        font-size: 14px;
+        padding: 10px;
+    }
+}

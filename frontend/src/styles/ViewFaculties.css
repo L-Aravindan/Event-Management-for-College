@@ -1,0 +1,171 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Root Variables */
+  :root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #0f3460;
+    --text-color: #e0e0e0;
+    --hover-color: #3a506b;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+  }
+  
+  /* Navbar Glassmorphism */
+  .navbar-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-shadow);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Content Styling */
+  .content {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--primary-color);
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+  }
+  
+  .faculties-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .faculties-list h3 {
+    margin-bottom: 15px;
+    color: var(--text-color);
+  }
+  
+  .scroll-container {
+    position: relative;
+  }
+  
+  .scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1;
+    transition: background-color 0.2s ease;
+  }
+  
+  .scroll-btn:hover {
+    background-color: #0d2c4d;
+  }
+  
+  .scroll-btn.left {
+    left: 0;
+  }
+  
+  .scroll-btn.right {
+    right: 0;
+  }
+  
+  .faculties-scroll {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+  }
+  
+  .faculty-card {
+    flex: none;
+    min-width: 250px;
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .faculty-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  }
+  
+  .faculty-card p {
+    font-size: 1rem;
+    color: var(--text-color);
+  }
+  
+  /* Faculty Events */
+  .faculty-events h3 {
+    margin-bottom: 15px;
+    color: var(--text-color);
+  }
+  
+  .events-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .event-card {
+    padding: 15px;
+    border-radius: 8px;
+    background-color: var(--secondary-color);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .event-card h4 {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--text-color);
+  }
+  
+  .event-card p {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+    color: var(--text-color);
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .faculty-card {
+      min-width: 100%;
+    }
+  
+    .scroll-btn {
+      width: 25px;
+      height: 25px;
+    }
+  }

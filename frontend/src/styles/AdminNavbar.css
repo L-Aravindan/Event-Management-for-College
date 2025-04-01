@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Source+Serif+4:ital,opsz,wght@0,8..60,200..900;1,8..60,200..900&display=swap');
+
+/* Root Variables */
+:root {
+  --primary-color: #11121a;
+  --hover-color: #272832;
+  --accent-color: #0071FF;
+  --text-color: #c9c9c9;
+  --glass-bg: rgba(255, 255, 255, 0.1);
+  --glass-shadow: rgba(255, 255, 255, 0.2);
+}
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: Poppins, 'Segoe UI', sans-serif;
+  color: var(--text-color);
+  background-color: var(--primary-color);
+  scroll-behavior: smooth;
+}
+
+/* Navbar Styling */
+.admin-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--glass-bg);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--glass-shadow);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  will-change: backdrop-filter;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  animation: navFadeIn 0.3s ease-out;
+}
+
+@keyframes navFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-list {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: var(--text-color);
+  font-size: 1rem;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.navbar-link:hover {
+  background-color: var(--hover-color);
+  transform: translateY(-2px);
+}
+
+.logout-button {
+  background: linear-gradient(90deg, #ff7e5f, #feb47b); /* Gradient background */
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 20px; /* Rounded corners */
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.logout-button:hover {
+  transform: scale(1.05); /* Slight zoom effect on hover */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.logout-button svg {
+  width: 16px;
+  height: 16px;
+  fill: white; /* Icon color */
+}
+
+/* Add these new styles for the logo */
+.navbar-left {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-logo {
+  height: 25px; /* Set the height as requested */
+  width: auto; /* Maintain aspect ratio */
+  margin-right: 20px; /* Add some space between logo and navigation links */
+  transition: transform 0.2s ease;
+  cursor: pointer;
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media screen and (max-width: 700px) {
+  .admin-navbar {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    height: 100vh;
+    width: min(15em, 100%);
+    z-index: 10;
+    border-left: 1px solid var(--hover-color);
+    transition: right 300ms ease-in-out;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 2em;
+  }
+
+  .admin-navbar.show {
+    right: 0;
+  }
+
+  .navbar-list {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar-link {
+    width: 100%;
+    padding-left: 2.5em;
+    padding-right: 2.5em;
+  }
+
+  .navbar-link.active-link {
+    border-bottom: none;
+  }
+
+  .home-li {
+    margin-right: unset;
+  }
+}
+
+/* Add responsive styles for the logo */
+@media screen and (max-width: 768px) {
+  .navbar-logo {
+    height: 20px; /* Slightly smaller on mobile */
+  }
+}

@@ -1,0 +1,278 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Root Variables */
+  :root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #0f3460;
+    --text-color: #e0e0e0;
+    --hover-color: #3a506b;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(255, 255, 255, 0.2);
+    --success-color: #2ecc71;
+    --error-color: #e74c3c;
+  }
+  
+  /* Body Styling */
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    overflow-x: hidden;
+  }
+  
+  /* Navbar Glassmorphism */
+  .navbar-container {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-shadow);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Content Styling */
+  .content {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--primary-color);
+    animation: fadeIn 0.5s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+  
+  @keyframes statusFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+  }
+  
+  h2 {
+    font-size: 1.8rem;
+    margin-bottom: 20px;
+    color: var(--text-color);
+  }
+  
+  .applications-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+  
+  .application-card {
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+    padding: 15px;
+  }
+  
+  .application-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+  
+  .application-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    color: var(--text-color);
+    margin-bottom: 10px;
+  }
+  
+  .application-card p {
+    font-size: 0.9rem;
+    color: var(--text-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .application-card p strong {
+    white-space: nowrap;
+  }
+  
+  .no-applications {
+    text-align: center;
+    color: var(--text-color);
+    padding: 20px;
+    font-size: 1.1rem;
+  }
+
+  .approval-status {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: statusFadeIn 0.3s ease-out forwards;
+    padding: 20px;
+  }
+
+  .status-container {
+    will-change: backdrop-filter;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+  }
+
+  .status-card {
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: statusFadeIn 0.3s ease-out forwards;
+  }
+
+  /* Apply staggered animation to status cards */
+  .status-container .status-card:nth-child(1) { animation-delay: 0s; }
+  .status-container .status-card:nth-child(2) { animation-delay: 0.05s; }
+  .status-container .status-card:nth-child(3) { animation-delay: 0.1s; }
+  .status-container .status-card:nth-child(4) { animation-delay: 0.15s; }
+  .status-container .status-card:nth-child(5) { animation-delay: 0.2s; }
+
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .event-card {
+    background-color: var(--secondary-color);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .event-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .event-image {
+    position: relative;
+    width: 100%;
+    height: 150px;
+    overflow: hidden;
+  }
+
+  .event-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .event-card:hover .event-image img {
+    transform: scale(1.05);
+  }
+
+  .event-info {
+    padding: 15px;
+  }
+
+  .event-info h3 {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 8px;
+  }
+
+  .event-time {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    opacity: 0.8;
+    margin-bottom: 12px;
+  }
+
+  .event-details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .event-details p {
+    font-size: 0.85rem;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .status-pending {
+    color: #ffd700;
+  }
+
+  .status-accepted {
+    color: var(--success-color);
+  }
+
+  .status-rejected {
+    color: var(--error-color);
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .applications-container {
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 15px;
+        padding: 15px;
+    }
+
+    .application-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .events-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .event-image {
+        height: 130px;
+    }
+
+    .event-info h3 {
+        font-size: 1rem;
+    }
+  }
+  
+  @media screen and (max-width: 480px) {
+    .applications-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+    }
+  }

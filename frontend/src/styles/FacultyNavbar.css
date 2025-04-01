@@ -1,0 +1,118 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Root Variables */
+  :root {
+    --primary-color: #1a1a2e;
+    --secondary-color: #16213e;
+    --accent-color: #0f3460;
+    --text-color: #e0e0e0;
+    --hover-color: #3a506b;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-shadow: rgba(255, 255, 255, 0.2);
+    --error-color: #ff4444;
+  }
+  
+  /* Navbar Styling */
+  .faculty-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--glass-shadow);
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar-list {
+    display: flex;
+    gap: 20px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .navbar-link {
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .navbar-link:hover {
+    background-color: var(--hover-color);
+  }
+  
+  .logout-button {
+    background: linear-gradient(90deg, #ff7e5f, #feb47b); /* Gradient background */
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between icon and text */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .logout-button:hover {
+    transform: scale(1.05); /* Slight zoom effect on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .logout-button svg {
+    width: 16px;
+    height: 16px;
+    fill: white; /* Icon color */
+  }
+  
+  /* Add these new styles for the logo */
+  .navbar-left {
+    display: flex;
+    align-items: center;
+  }
+
+  .navbar-logo {
+    height: 25px; /* Set the height as requested */
+    width: auto; /* Maintain aspect ratio */
+    margin-right: 20px; /* Add some space between logo and navigation links */
+    transition: transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .navbar-logo:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .navbar-list {
+      gap: 10px;
+    }
+  
+    .navbar-link {
+      font-size: 0.9rem;
+      padding: 6px 10px;
+    }
+  
+    .logout-button {
+      padding: 6px 12px;
+      font-size: 0.9rem;
+    }
+
+    .navbar-logo {
+      height: 20px; /* Slightly smaller on mobile */
+    }
+  }

@@ -1,0 +1,291 @@
+@keyframes detailsFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.page-container {
+    display: flex;
+    gap: 40px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.student-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    max-width: 500px;
+    color: white;
+    flex: 1;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: detailsFadeIn 0.3s ease-out forwards;
+}
+
+.pending-requests-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    max-width: 500px;
+    color: white;
+    flex: 1;
+    max-height: 600px;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.back-button {
+    align-self: flex-start;
+    margin-bottom: 15px;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #1a1a1a;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.back-button:hover {
+    background-color: #333;
+    transform: translateY(-2px) translateZ(0);
+}
+
+.student-details h2 {
+    font-size: 28px;
+    margin: 15px 0;
+    color: white;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: detailsFadeIn 0.3s ease-out forwards;
+    animation-delay: 0.1s;
+}
+
+.student-details h3, .pending-requests-container h3 {
+    font-size: 20px;
+    margin: 20px 0 15px;
+    color: white;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.student-details p {
+    margin: 10px 0;
+    font-size: 14px;
+    color: #e0e0e0;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.student-details strong {
+    color: #a0a0a0;
+    margin-right: 8px;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    opacity: 0;
+    animation: detailsFadeIn 0.3s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+.actions button {
+    padding: 10px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.actions button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px) translateZ(0);
+}
+
+/* Form styling */
+.student-details form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.student-details input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    font-size: 14px;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.student-details input::placeholder {
+    color: #a0a0a0;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Pending Requests styling */
+.pending-requests-container ul {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    overflow-y: auto;
+    max-height: calc(100% - 60px);
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.pending-requests-container li {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 15px;
+    border-radius: 10px;
+    margin: 12px 0;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.pending-requests-container li p {
+    margin: 8px 0;
+    color: #e0e0e0;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Webkit (Chrome, Safari, Edge) scrollbar styling */
+.pending-requests-container ul::-webkit-scrollbar {
+    width: 8px;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.pending-requests-container ul::-webkit-scrollbar-track {
+    background: transparent;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+.pending-requests-container ul::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.pending-requests-container ul::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255, 255, 255, 0.5);
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Status-specific button styling */
+.actions button[onClick*="accepted"] {
+    background-color: rgba(40, 167, 69, 0.3);
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.actions button[onClick*="accepted"]:hover {
+    background-color: rgba(40, 167, 69, 0.5);
+    transform: translateY(-2px) translateZ(0);
+}
+
+.actions button[onClick*="rejected"] {
+    background-color: rgba(220, 53, 69, 0.3);
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+.actions button[onClick*="rejected"]:hover {
+    background-color: rgba(220, 53, 69, 0.5);
+    transform: translateY(-2px) translateZ(0);
+}
+
+button[onClick*="handleDelete"] {
+    background-color: rgba(220, 53, 69, 0.3);
+    will-change: transform;
+    transform: translateZ(0);
+}
+
+button[onClick*="handleDelete"]:hover {
+    background-color: rgba(220, 53, 69, 0.5);
+    transform: translateY(-2px) translateZ(0);
+}
+
+@media (max-width: 1024px) {
+    .page-container {
+        flex-direction: column;
+        align-items: center;
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+
+    .student-details,
+    .pending-requests-container {
+        width: 100%;
+        will-change: transform;
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
+}
