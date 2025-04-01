@@ -163,16 +163,7 @@ const AdminEventDetail = () => {
     }
   };
 
-  const handleAttendanceOverride = async (eventId, hasAttendance) => {
-    try {
-      await apiClient.put(`/admin/events/${eventId}/attendance-override`, { hasAttendance });
-      alert("Attendance override updated successfully!");
-      fetchEventsParticipated();
-    } catch (err) {
-      console.error("Error updating attendance override:", err);
-      alert("Failed to update attendance override");
-    }
-  };
+  
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!event) return <div className="error">Event not found</div>;
@@ -267,23 +258,15 @@ const AdminEventDetail = () => {
                           </select>
                         </p>
                         <p className="flex justify-between items-center">
-                          <span className="text-white/60">Attendance Override:</span>
-                          <select
-                            value={event.hasAttendance ? "present" : "absent"}
-                            onChange={(e) => handleAttendanceOverride(event._id, e.target.value === "present")}
-                            className={`bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm ${
-                                event.hasAttendance ? 'text-green-300' : 'text-red-300'
-                            }`}
-                          >
-                            <option value="present" className="bg-black text-green-300">Present</option>
-                            <option value="absent" className="bg-black text-red-300">Absent</option>
-                          </select>
+                          <span className="text-white/60">Attendance:</span>
+                          <span className={`px-2 py-1 rounded-full text-xs ${
+                              event.hasAttendance 
+                                  ? 'bg-green-500/20 text-green-300' 
+                                  : 'bg-red-500/20 text-red-300'
+                          }`}>
+                              {event.hasAttendance ? 'Present' : 'Absent'}
+                          </span>
                         </p>
-                        {event.hasAttendance && (
-                          <p className="mt-2 text-green-300 text-xs italic">
-                            ✓ Attendance Marked
-                          </p>
-                        )}
                       </div>
                     </div>
                   ))
