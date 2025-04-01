@@ -16,36 +16,55 @@ const AdminEventDetail = () => {
         description: '',
         club: ''
     });
+    const [requests, setRequests] = useState([]);
     const { eventId } = useParams();
 
     const isEventExpired = (eventDate, eventTime) => {
-        const eventDateTime = new Date(`${eventDate}T${eventTime}`);
-        const currentDateTime = new Date();
-        return currentDateTime > eventDateTime;
+        try {
+            const [hours, minutes] = eventTime.split(':');
+            const eventDateTime = new Date(eventDate);
+            eventDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
+            const currentDateTime = new Date();
+            return currentDateTime > eventDateTime;
+        } catch (error) {
+            console.error('Error checking event expiry:', error);
+            return false;
+        }
+    };
+
+    const fetchEventRequests = async () => {
+        try {
+            const response = await apiClient.get(`/admin/events/${eventId}/requests`);
+            setRequests(response.data);
+        } catch (err) {
+            console.error('Error fetching event requests:', err);
+        }
     };
 
     useEffect(() => {
-        const fetchEventDetails = async () => {
+        const fetchData = async () => {
             try {
-                const response = await apiClient.get(`/events/${eventId}`);
-                setEvent(response.data);
+                const [eventResponse] = await Promise.all([
+                    apiClient.get(`/events/${eventId}`),
+                    fetchEventRequests()
+                ]);
+                setEvent(eventResponse.data);
                 setFormData({
-                    name: response.data.name,
-                    date: response.data.date.split('T')[0],
-                    time: response.data.time,
-                    venue: response.data.venue,
-                    description: response.data.description,
-                    club: response.data.club
+                    name: eventResponse.data.name,
+                    date: eventResponse.data.date.split('T')[0],
+                    time: eventResponse.data.time,
+                    venue: eventResponse.data.venue,
+                    description: eventResponse.data.description,
+                    club: eventResponse.data.club
                 });
             } catch (err) {
-                console.error('Error fetching event details:', err);
-                alert('Failed to fetch event details');
+                console.error('Error fetching data:', err);
+                alert('Failed to fetch data');
             } finally {
                 setLoading(false);
             }
         };
-
-        fetchEventDetails();
+        fetchData();
     }, [eventId]);
 
     const handleDelete = async () => {
@@ -84,6 +103,19 @@ const AdminEventDetail = () => {
         }
     };
 
+    const handleRequestAction = async (studentId, action) => {
+        try {
+            await apiClient.put(`/admin/users/${studentId}/event-requests/${eventId}`, { 
+                status: action 
+            });
+            alert(`Request ${action === 'approved' ? 'approved' : 'rejected'} successfully`);
+            fetchEventRequests(); // Refresh the requests
+        } catch (err) {
+            console.error('Error updating request:', err);
+            alert('Failed to update request');
+        }
+    };
+
     if (loading) return <div className="loading">Loading...</div>;
     if (!event) return <div className="error">Event not found</div>;
 
@@ -105,11 +137,11 @@ const AdminEventDetail = () => {
                     {/* Left Column - Image and Status */}
                     <div className="lg:col-span-5 space-y-6">
                         <div className="relative group">
-                            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                            <div className="relative w-full rounded-xl overflow-hidden border border-white/10 h-[550px]">
                                 <img 
                                     src={event.image || defaultEventImage} 
                                     alt={event.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    className="w-full h-full object-cover"
                                     onError={(e) => {
                                         e.target.onerror = null;
                                         e.target.src = defaultEventImage;
@@ -262,6 +294,68 @@ const AdminEventDetail = () => {
                             )}
                         </div>
                     </div>
+                </div>
+
+                {/* Event Requests Section */}
+                <div className="mt-8 bg-black/70 backdrop-blur-md rounded-xl shadow-xl border border-white/20 p-6">
+                    <h2 className="text-2xl font-bold text-white mb-6">Event Requests</h2>
+                    {requests.length > 0 ? (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
+                            {requests.map((request) => (
+                                <div 
+                                    key={request.studentId._id}
+                                    className="bg-white/10 rounded-lg p-4 border border-white/10 transition-all duration-300 hover:border-white/20"
+                                >
+                                    <div className="space-y-3">
+                                        <div className="flex justify-between items-start">
+                                            <h3 className="text-white font-medium">{request.studentId.name}</h3>
+                                            <span className={`px-2 py-1 rounded-full text-xs ${
+                                                request.status === 'pending' ? 'bg-yellow-500/20 text-yellow-300' :
+                                                request.status === 'approved' ? 'bg-green-500/20 text-green-300' :
+                                                'bg-red-500/20 text-red-300'
+                                            }`}>
+                                                {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                                            </span>
+                                        </div>
+                                        <div className="space-y-1">
+                                            <p className="text-white/60 text-sm">
+                                                Register: {request.studentId.registerNumber}
+                                            </p>
+                                            <p className="text-white/60 text-sm">
+                                                Department: {request.studentId.department}
+                                            </p>
+                                        </div>
+                                        <div className="flex gap-3 mt-4">
+                                            <button
+                                                onClick={() => handleRequestAction(request.studentId._id, 'approved')}
+                                                className={`flex-1 py-2 rounded-lg transition-all duration-300 hover:-translate-y-1 ${
+                                                    request.status === 'approved' 
+                                                    ? 'bg-green-500/40 text-green-300'
+                                                    : 'bg-green-500/20 hover:bg-green-500/30 text-white'
+                                                }`}
+                                            >
+                                                {request.status === 'approved' ? 'Approved' : 'Approve'}
+                                            </button>
+                                            <button
+                                                onClick={() => handleRequestAction(request.studentId._id, 'rejected')}
+                                                className={`flex-1 py-2 rounded-lg transition-all duration-300 hover:-translate-y-1 ${
+                                                    request.status === 'rejected'
+                                                    ? 'bg-red-500/40 text-red-300'
+                                                    : 'bg-red-500/20 hover:bg-red-500/30 text-white'
+                                                }`}
+                                            >
+                                                {request.status === 'rejected' ? 'Rejected' : 'Reject'}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center text-white/60 bg-white/10 rounded-lg p-6">
+                            No requests found for this event
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

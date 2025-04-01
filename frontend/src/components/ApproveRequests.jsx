@@ -46,6 +46,21 @@ const ApproveRequests = ({ onLogout }) => {
         }
     };
 
+    const getStatusStyle = (status) => {
+        switch (status) {
+            case 'pending':
+                return 'bg-yellow-500/20 text-yellow-300 border border-yellow-500/30';
+            case 'accepted':
+                return 'bg-green-500/20 text-green-300 border border-green-500/30';
+            case 'approved':
+                    return 'bg-green-500/20 text-green-300 border border-green-500/30';
+            case 'rejected':
+                return 'bg-red-500/20 text-red-300 border border-red-500/30';
+            default:
+                return 'bg-gray-500/20 text-gray-300 border border-gray-500/30';
+        }
+    };
+
     const filteredRequests = requests.filter(request => 
         request.studentId.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         request.eventName.toLowerCase().includes(searchTerm.toLowerCase())
@@ -91,14 +106,19 @@ const ApproveRequests = ({ onLogout }) => {
                                 <div className="space-y-2 text-sm text-white/80">
                                     <p>Student: {request.studentId.name}</p>
                                     <p>Email: {request.studentId.email}</p>
-                                    <p className={`
-                                        inline-block px-2 py-1 rounded-full text-xs
-                                        ${request.status === 'pending' ? 'bg-yellow-500/20 text-yellow-300' : ''}
-                                        ${request.status === 'accepted' ? 'bg-green-500/20 text-green-300' : ''}
-                                        ${request.status === 'rejected' ? 'bg-red-500/20 text-red-300' : ''}
+                                    <div className={`
+                                        inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium
+                                        ${getStatusStyle(request.status)}
                                     `}>
-                                        Status: {request.status}
-                                    </p>
+                                        <span className="text-white/60 mr-2">Status:</span>
+                                        <span className={`
+                                            inline-block w-2 h-2 rounded-full mr-2
+                                            ${request.status === 'pending' ? 'bg-yellow-400' : ''}
+                                            ${request.status === 'accepted' ? 'bg-green-400' : ''}
+                                            ${request.status === 'rejected' ? 'bg-red-400' : ''}
+                                        `}></span>
+                                        {request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                                    </div>
                                 </div>
                                 {request.status === 'pending' && (
                                     <div className="flex gap-3 mt-4">

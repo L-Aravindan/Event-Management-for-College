@@ -91,19 +91,19 @@ const AddEvents = ({ onLogout }) => {
     };
 
     return (
-        <div className="p-4 h-[calc(100vh-80px)] overflow-hidden transform-gpu">
-            <div className="max-w-2xl mx-auto bg-black/30 backdrop-blur-md rounded-xl shadow-xl border border-white/20 p-4 sm:p-6 md:p-8 animate-fadeIn">
+        <div className="p-4 h-[calc(100vh-80px)]">
+            <div className="max-w-2xl mx-auto bg-black/30 backdrop-blur-md rounded-xl shadow-xl border border-white/20 p-4 sm:p-6 md:p-8 animate-fadeIn max-h-full overflow-y-auto scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
                 <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-6">
                     Create New Event
                 </h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     {imagePreview && (
-                        <div className="w-full max-h-[200px] overflow-hidden rounded-lg mb-4">
+                        <div className="relative w-full h-[300px] rounded-lg mb-4 bg-white/10">
                             <img 
                                 src={imagePreview} 
                                 alt="Preview" 
-                                className="w-full h-full object-cover"
+                                className="absolute inset-0 w-full h-full object-contain rounded-lg"
                             />
                         </div>
                     )}

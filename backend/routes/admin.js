@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Event = require('../models/Event');
 const EventRequest = require('../models/EventRequest');
+const Attendance = require('../models/Attendance'); // Added Attendance model
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
@@ -234,6 +235,64 @@ router.put('/users/:studentId', authMiddleware, isAdmin, async (req, res) => {
         res.json(student);
     } catch (error) {
         console.error('Error updating student:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Override student attendance for an event (Protected route for admin)
+router.put('/attendance/override/:eventId/:studentId', authMiddleware, isAdmin, async (req, res) => {
+    try {
+        const { eventId, studentId } = req.params;
+        const { hasAttendance } = req.body;
+
+        // Find existing attendance record
+        let attendance = await Attendance.findOne({ 
+            eventId, 
+            studentId 
+        });
+
+        if (hasAttendance) {
+            // Create attendance record if it doesn't exist and hasAttendance is true
+            if (!attendance) {
+                attendance = new Attendance({
+                    studentId,
+                    eventId
+                });
+                await attendance.save();
+            }
+        } else {
+            // Remove attendance record if it exists and hasAttendance is false
+            if (attendance) {
+                await Attendance.findByIdAndDelete(attendance._id);
+            }
+        }
+
+        res.json({ message: 'Attendance status updated successfully' });
+    } catch (error) {
+        console.error('Error overriding attendance:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
+// Get all requests for a specific event
+router.get('/events/:eventId/requests', authMiddleware, isAdmin, async (req, res) => {
+    try {
+        const { eventId } = req.params;
+        const event = await Event.findById(eventId)
+            .populate('applicants.studentId', 'name registerNumber department');
+        
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        const requests = event.applicants.map(applicant => ({
+            studentId: applicant.studentId,
+            status: applicant.status
+        }));
+
+        res.json(requests);
+    } catch (error) {
+        console.error('Error fetching event requests:', error);
         res.status(500).json({ error: 'Server error' });
     }
 });

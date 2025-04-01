@@ -64,13 +64,13 @@ const DisplayEvents = ({ onLogout }) => {
                                 <div
                                     key={event._id}
                                     onClick={() => handleEventClick(event._id)}
-                                    className={`group bg-white/10 rounded-lg overflow-hidden shadow-lg border border-white/10 cursor-pointer relative min-h-[320px] transition-all duration-300 hover:shadow-2xl hover:border-white/30 animate-slideUp ${expired ? 'opacity-70' : ''}`}
+                                    className={`group bg-white/10 rounded-lg overflow-hidden shadow-lg border border-white/10 cursor-pointer relative flex flex-col h-[360px] transition-all duration-300 hover:shadow-2xl hover:border-white/30 animate-slideUp ${expired ? 'opacity-70' : ''}`}
                                     style={{ 
                                         animationDelay: `${index * 0.1}s`,
                                         animationFillMode: 'both' 
                                     }}
                                 >
-                                    <div className="relative w-full h-40 overflow-hidden">
+                                    <div className="relative w-full h-40 flex-shrink-0">
                                         <img
                                             src={event.image || defaultEventImage}
                                             alt={event.name}
@@ -88,11 +88,11 @@ const DisplayEvents = ({ onLogout }) => {
                                             </div>
                                         )}
                                     </div>
-                                    <div className="p-4 space-y-2.5 bg-white/5 backdrop-blur-sm flex-grow">
-                                        <h3 className="text-white text-lg font-medium line-clamp-1">
+                                    <div className="p-4 flex flex-col flex-grow bg-white/5 backdrop-blur-sm">
+                                        <h3 className="text-white text-lg font-medium line-clamp-1 mb-4">
                                             {event.name}
                                         </h3>
-                                        <div className="space-y-2">
+                                        <div className="space-y-2 mt-auto">
                                             <p className="text-white/90 text-sm flex justify-between items-center gap-4">
                                                 <span className="text-white/70 min-w-[60px]">Date:</span>
                                                 <span className="text-right">

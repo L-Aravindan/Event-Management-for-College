@@ -11,9 +11,16 @@ const FacultyEventDetail = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
     const isEventExpired = (eventDate, eventTime) => {
-        const eventDateTime = new Date(`${eventDate}T${eventTime}`);
-        const currentDateTime = new Date();
-        return currentDateTime > eventDateTime;
+        try {
+            const [hours, minutes] = eventTime.split(':');
+            const eventDateTime = new Date(eventDate);
+            eventDateTime.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0);
+            const currentDateTime = new Date();
+            return currentDateTime > eventDateTime;
+        } catch (error) {
+            console.error('Error checking event expiry:', error);
+            return false;
+        }
     };
 
     useEffect(() => {
@@ -161,11 +168,11 @@ const FacultyEventDetail = () => {
                     {/* Left Column - Image and Status */}
                     <div className="lg:col-span-5 space-y-6">
                         <div className="relative group">
-                            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                            <div className="relative w-full rounded-xl overflow-hidden border border-white/10 h-[550px]">
                                 <img 
                                     src={event.image || defaultEventImage} 
                                     alt={event.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    className="w-full h-full object-cover"
                                     onError={(e) => {
                                         e.target.onerror = null;
                                         e.target.src = defaultEventImage;

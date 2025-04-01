@@ -73,9 +73,17 @@ const ViewStudents = ({ onLogout }) => {
 
     const handleRequestAction = async (eventId, action) => {
         try {
-            await apiClient.put(`/admin/event-requests/${eventId}`, { status: action });
+            // Convert action to match backend expected values
+            const status = action === 'accepted' ? 'approved' : action;
+            
+            await apiClient.put(`/admin/users/${selectedStudent}/event-requests/${eventId}`, { 
+                status: status
+            });
             alert(`Request ${action}ed successfully`);
-            setPendingRequests(pendingRequests.filter(request => request.eventId !== eventId));
+            
+            // Refresh the pending requests after action
+            const response = await apiClient.get(`/admin/users/${selectedStudent}/event-requests`);
+            setPendingRequests(response.data);
         } catch (err) {
             console.error(`Error ${action}ing request:`, err);
             alert(`Failed to ${action} request`);
@@ -138,11 +146,34 @@ const ViewStudents = ({ onLogout }) => {
                             {filteredStudents.map((student) => (
                                 <div
                                     key={student._id}
-                                    onClick={() => navigate(`/admin/student/${student._id}`)}
-                                    className="bg-white/10 rounded-lg p-4 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer"
+                                    className="bg-white/10 rounded-lg p-4 border border-white/10 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl cursor-pointer group"
                                 >
-                                    <p className="text-white font-medium">{student.name}</p>
-                                    <p className="text-white/60 text-sm">Register: {student.registerNumber}</p>
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <p className="text-white font-medium">{student.name}</p>
+                                            <p className="text-white/60 text-sm">Register: {student.registerNumber}</p>
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handlePendingRequests(student._id);
+                                                }}
+                                                className="px-3 py-1 bg-white/10 hover:bg-white/20 text-white/80 rounded-lg text-sm transition-all duration-300"
+                                            >
+                                                View Requests
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    navigate(`/admin/student/${student._id}`);
+                                                }}
+                                                className="px-3 py-1 bg-accent/20 hover:bg-accent/30 text-white/80 rounded-lg text-sm transition-all duration-300"
+                                            >
+                                                View Details →
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             ))}
                         </div>
@@ -186,7 +217,7 @@ const ViewStudents = ({ onLogout }) => {
                                                     {!expired && (
                                                         <div className="flex gap-3 mt-4">
                                                             <button
-                                                                onClick={() => handleRequestAction(request.eventId, 'accepted')}
+                                                                onClick={() => handleRequestAction(request.eventId, 'approved')}
                                                                 className="flex-1 py-2 bg-green-500/20 hover:bg-green-500/30 text-white rounded-lg transition-all duration-300 hover:-translate-y-1"
                                                             >
                                                                 Accept

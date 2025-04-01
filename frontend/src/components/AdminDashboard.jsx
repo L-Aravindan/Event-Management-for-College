@@ -3,6 +3,63 @@ import { useNavigate } from 'react-router-dom';
 import apiClient from '../services/api';
 import defaultEventImage from '../assets/logo-sm.svg';
 
+// Common event card component styling for all dashboards
+const EventCard = ({ event, index, onClick, expired }) => (
+    <div
+        onClick={() => onClick(event._id)}
+        className={`group bg-white/10 rounded-lg overflow-hidden shadow-lg border border-white/10 
+            cursor-pointer relative flex flex-col h-[360px] transition-all duration-300 
+            hover:shadow-2xl hover:border-white/30 animate-slideUp ${expired ? 'opacity-70' : ''}`}
+        style={{ 
+            animationDelay: `${index * 0.1}s`,
+            animationFillMode: 'both' 
+        }}
+    >
+        {/* Image Section */}
+        <div className="relative w-full h-40 flex-shrink-0">
+            <img
+                src={event.image || defaultEventImage}
+                alt={event.name}
+                className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = defaultEventImage;
+                }}
+            />
+            {expired && (
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <span className="text-white/90 font-bold text-lg uppercase tracking-wider">
+                        EXPIRED
+                    </span>
+                </div>
+            )}
+        </div>
+
+        {/* Content Section */}
+        <div className="p-4 flex flex-col flex-grow bg-white/5 backdrop-blur-sm">
+            <h3 className="text-white text-lg font-medium line-clamp-1 mb-4">
+                {event.name}
+            </h3>
+            <div className="space-y-2 mt-auto">
+                <p className="text-white/90 text-sm flex justify-between items-center gap-4">
+                    <span className="text-white/70 min-w-[60px]">Date:</span>
+                    <span className="text-right">
+                        {new Date(event.date).toLocaleDateString('en-GB')}
+                    </span>
+                </p>
+                <p className="text-white/90 text-sm flex justify-between items-center gap-4">
+                    <span className="text-white/70 min-w-[60px]">Time:</span>
+                    <span className="text-right">{event.time}</span>
+                </p>
+                <p className="text-white/90 text-sm flex justify-between items-center gap-4">
+                    <span className="text-white/70 min-w-[60px]">Venue:</span>
+                    <span className="text-right">{event.venue}</span>
+                </p>
+            </div>
+        </div>
+    </div>
+);
+
 const AdminDashboard = ({ onLogout }) => {
     const [events, setEvents] = useState([]);
     const navigate = useNavigate();
@@ -46,66 +103,15 @@ const AdminDashboard = ({ onLogout }) => {
 
                 {events.length > 0 ? (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4 overflow-y-auto h-[calc(100vh-200px)] pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/20 hover:scrollbar-thumb-white/30">
-                        {events.map((event, index) => {
-                            const expired = isEventExpired(event.date, event.time);
-                            return (
-                                <div
-                                    key={event._id}
-                                    onClick={() => handleEventClick(event._id)}
-                                    className={`
-                                        group bg-white/10 rounded-lg overflow-hidden
-                                        shadow-lg border border-white/10
-                                        cursor-pointer relative min-h-[320px]
-                                        transition-all duration-300
-                                        hover:shadow-2xl hover:border-white/30
-                                        animate-slideUp
-                                        ${expired ? 'opacity-70' : ''}
-                                    `}
-                                    style={{ 
-                                        animationDelay: `${index * 0.1}s`,
-                                        animationFillMode: 'both' 
-                                    }}
-                                >
-                                    <div className="relative w-full h-40 overflow-hidden"> {/* Increased height from h-36 to h-40 */}
-                                        <img
-                                            src={event.image || defaultEventImage}
-                                            alt={event.name}
-                                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                                            onError={(e) => {
-                                                e.target.onerror = null;
-                                                e.target.src = defaultEventImage;
-                                            }}
-                                        />
-                                        {expired && (
-                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                                                <span className="text-white/90 font-bold text-lg uppercase tracking-wider">
-                                                    EXPIRED
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="p-4 space-y-2.5 bg-white/5 backdrop-blur-sm flex-grow"> {/* Increased padding and spacing */}
-                                        <h3 className="text-white text-lg font-medium line-clamp-1"> {/* Increased text size */}
-                                            {event.name}
-                                        </h3>
-                                        <div className="space-y-2"> {/* Increased spacing */}
-                                            <p className="text-white/90 text-sm flex justify-between items-center gap-4">
-                                                <span className="text-white/70 min-w-[60px]">Date:</span>
-                                                <span className="text-right">{new Date(event.date).toLocaleDateString('en-GB')}</span>
-                                            </p>
-                                            <p className="text-white/90 text-sm flex justify-between items-center gap-4">
-                                                <span className="text-white/70 min-w-[60px]">Time:</span>
-                                                <span className="text-right">{event.time}</span>
-                                            </p>
-                                            <p className="text-white/90 text-sm flex justify-between items-center gap-4">
-                                                <span className="text-white/70 min-w-[60px]">Venue:</span>
-                                                <span className="text-right">{event.venue}</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
+                        {events.map((event, index) => (
+                            <EventCard
+                                key={event._id}
+                                event={event}
+                                index={index}
+                                onClick={handleEventClick}
+                                expired={isEventExpired(event.date, event.time)}
+                            />
+                        ))}
                     </div>
                 ) : (
                     <div className="flex items-center justify-center h-full">

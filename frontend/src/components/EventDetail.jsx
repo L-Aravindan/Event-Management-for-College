@@ -140,11 +140,11 @@ const EventDetail = () => {
                     {/* Left Column - Image and Status */}
                     <div className="lg:col-span-5 space-y-6">
                         <div className="relative group">
-                            <div className="relative w-full aspect-[4/3] rounded-xl overflow-hidden border border-white/10">
+                            <div className="relative w-full rounded-xl overflow-hidden border border-white/10 h-[500px]"> {/* Reduced height from 600px to 400px */}
                                 <img 
                                     src={event.image || defaultEventImage} 
                                     alt={event.name}
-                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                    className="w-full h-full object-cover" // Changed from object-cover to object-contain
                                     onError={(e) => {
                                         e.target.onerror = null;
                                         e.target.src = defaultEventImage;
