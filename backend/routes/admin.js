@@ -308,4 +308,18 @@ router.get('/events/:eventId/attendance', authMiddleware, isAdmin, async (req, r
     }
 });
 
+// Get attendance records for a specific student
+router.get('/users/:studentId/attendance', authMiddleware, isAdmin, async (req, res) => {
+    try {
+        const { studentId } = req.params;
+        const attendanceRecords = await Attendance.find({ studentId })
+            .populate('eventId', 'name date time venue');
+            
+        res.json(attendanceRecords);
+    } catch (error) {
+        console.error('Error fetching attendance records:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 module.exports = router;

@@ -13,13 +13,21 @@ const StudentDetails = () => {
     useEffect(() => {
         const fetchStudentDetails = async () => {
             try {
-                const [studentRes, eventsRes] = await Promise.all([
+                const [studentRes, eventsRes, attendanceRes] = await Promise.all([
                     apiClient.get(`/admin/users/${studentId}`),
-                    apiClient.get(`/admin/users/${studentId}/event-requests`)
+                    apiClient.get(`/admin/users/${studentId}/event-requests`),
+                    apiClient.get(`/admin/users/${studentId}/attendance`) // New endpoint
                 ]);
+
                 setStudent(studentRes.data);
                 setEditedStudent(studentRes.data);
-                setEvents(eventsRes.data);
+
+                // Combine event data with attendance data
+                const eventsWithAttendance = eventsRes.data.map(event => ({
+                    ...event,
+                    hasAttendance: attendanceRes.data.some(record => record.eventId === event.eventId)
+                }));
+                setEvents(eventsWithAttendance);
             } catch (err) {
                 console.error('Error fetching student details:', err);
                 alert('Failed to fetch student details');
@@ -209,7 +217,7 @@ const StudentDetails = () => {
                                                         </select>
                                                     </p>
                                                     <p className="flex justify-between items-center">
-                                                        <span className="text-white/60">Attendance:</span>
+                                                        <span className="text-white/60">Attendance Override:</span>
                                                         <select
                                                             value={event.hasAttendance ? "present" : "absent"}
                                                             onChange={(e) => handleAttendanceOverride(event._id, e.target.value === "present")}

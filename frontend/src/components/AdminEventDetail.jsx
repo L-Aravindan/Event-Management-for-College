@@ -24,6 +24,7 @@ const AdminEventDetail = () => {
     rejected: 0,
     attendanceMarked: 0,
   });
+  const [events, setEvents] = useState([]);
   const { eventId } = useParams();
 
   const isEventExpired = (eventDate, eventTime) => {
@@ -45,6 +46,15 @@ const AdminEventDetail = () => {
       setRequests(response.data);
     } catch (err) {
       console.error("Error fetching event requests:", err);
+    }
+  };
+
+  const fetchEventsParticipated = async () => {
+    try {
+      const response = await apiClient.get(`/admin/events/${eventId}/participated`);
+      setEvents(response.data);
+    } catch (err) {
+      console.error("Error fetching events participated:", err);
     }
   };
 
@@ -83,6 +93,7 @@ const AdminEventDetail = () => {
       }
     };
     fetchData();
+    fetchEventsParticipated();
   }, [eventId]);
 
   const handleDelete = async () => {
@@ -138,6 +149,28 @@ const AdminEventDetail = () => {
     } catch (err) {
       console.error("Error updating request:", err);
       alert("Failed to update request");
+    }
+  };
+
+  const handleEventStatusChange = async (eventId, status) => {
+    try {
+      await apiClient.put(`/admin/events/${eventId}/status`, { status });
+      alert("Event status updated successfully!");
+      fetchEventsParticipated();
+    } catch (err) {
+      console.error("Error updating event status:", err);
+      alert("Failed to update event status");
+    }
+  };
+
+  const handleAttendanceOverride = async (eventId, hasAttendance) => {
+    try {
+      await apiClient.put(`/admin/events/${eventId}/attendance-override`, { hasAttendance });
+      alert("Attendance override updated successfully!");
+      fetchEventsParticipated();
+    } catch (err) {
+      console.error("Error updating attendance override:", err);
+      alert("Failed to update attendance override");
     }
   };
 
@@ -200,9 +233,68 @@ const AdminEventDetail = () => {
                 </p>
               </div>
             </div>
-            </div>
 
-            
+            {/* Events Participated */}
+            <div className="space-y-4">
+              <h3 className="text-xl text-white font-semibold mb-4">Events Participated</h3>
+              <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
+                {events.length > 0 ? (
+                  events.map((event) => (
+                    <div 
+                      key={event._id}
+                      className={`bg-white/10 rounded-lg p-4 border border-white/10 ${
+                          event.hasAttendance ? 'border-green-500/30' : ''
+                      }`}
+                    >
+                      <h4 className="text-white font-medium mb-2">{event.name}</h4>
+                      <div className="space-y-2 text-sm">
+                        <p className="flex justify-between">
+                          <span className="text-white/60">Date:</span>
+                          <span className="text-white">
+                            {new Date(event.date).toLocaleDateString('en-GB')}
+                          </span>
+                        </p>
+                        <p className="flex justify-between items-center">
+                          <span className="text-white/60">Status:</span>
+                          <select
+                            value={event.status}
+                            onChange={(e) => handleEventStatusChange(event._id, e.target.value)}
+                            className="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm"
+                          >
+                            <option value="pending" className="bg-black text-yellow-300">Pending</option>
+                            <option value="approved" className="bg-black text-green-300">Approved</option>
+                            <option value="rejected" className="bg-black text-red-300">Rejected</option>
+                          </select>
+                        </p>
+                        <p className="flex justify-between items-center">
+                          <span className="text-white/60">Attendance Override:</span>
+                          <select
+                            value={event.hasAttendance ? "present" : "absent"}
+                            onChange={(e) => handleAttendanceOverride(event._id, e.target.value === "present")}
+                            className={`bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm ${
+                                event.hasAttendance ? 'text-green-300' : 'text-red-300'
+                            }`}
+                          >
+                            <option value="present" className="bg-black text-green-300">Present</option>
+                            <option value="absent" className="bg-black text-red-300">Absent</option>
+                          </select>
+                        </p>
+                        {event.hasAttendance && (
+                          <p className="mt-2 text-green-300 text-xs italic">
+                            ✓ Attendance Marked
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center text-white/60 bg-white/10 rounded-lg p-6">
+                    No events found
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
 
           {/* Right Column - Event Details */}
           <div className="lg:col-span-7">
