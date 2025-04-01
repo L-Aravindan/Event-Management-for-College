@@ -9,6 +9,12 @@ const FacultyEventDetail = () => {
     const [loading, setLoading] = useState(true);
     const { eventId } = useParams();
     const user = JSON.parse(localStorage.getItem('user'));
+    const [stats, setStats] = useState({
+        totalApplicants: 0,
+        approved: 0,
+        pending: 0,
+        rejected: 0
+    });
 
     const isEventExpired = (eventDate, eventTime) => {
         try {
@@ -28,6 +34,15 @@ const FacultyEventDetail = () => {
             try {
                 const response = await apiClient.get(`/events/${eventId}`);
                 setEvent(response.data);
+                
+                // Calculate stats from applicants
+                const applicants = response.data.applicants || [];
+                setStats({
+                    totalApplicants: applicants.length,
+                    approved: applicants.filter(a => a.status === 'approved').length,
+                    pending: applicants.filter(a => a.status === 'pending').length,
+                    rejected: applicants.filter(a => a.status === 'rejected').length
+                });
             } catch (err) {
                 console.error('Error fetching event details:', err);
                 alert('Failed to fetch event details');
@@ -233,7 +248,30 @@ const FacultyEventDetail = () => {
                                     </div>
                                 </div>
 
-                                {event.facultyId?._id === user?.id && !isExpired && (
+                                {/* Event Statistics */}
+                                <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+                                    <h3 className="text-lg font-medium text-white mb-4">Event Statistics</h3>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                                        <div className="text-center">
+                                            <p className="text-2xl font-bold text-white">{stats.totalApplicants}</p>
+                                            <p className="text-sm text-white/60">Total Applicants</p>
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-2xl font-bold text-green-400">{stats.approved}</p>
+                                            <p className="text-sm text-white/60">Approved</p>
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-2xl font-bold text-yellow-400">{stats.pending}</p>
+                                            <p className="text-sm text-white/60">Pending</p>
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-2xl font-bold text-red-400">{stats.rejected}</p>
+                                            <p className="text-sm text-white/60">Rejected</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {event.facultyId?._id === user?.id && (
                                     <div className="flex gap-4 pt-4">
                                         <button 
                                             onClick={handleGenerateAttendance}

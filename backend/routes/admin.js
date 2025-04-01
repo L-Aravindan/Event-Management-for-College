@@ -297,4 +297,15 @@ router.get('/events/:eventId/requests', authMiddleware, isAdmin, async (req, res
     }
 });
 
+// Get attendance stats for an event
+router.get('/events/:eventId/attendance', authMiddleware, isAdmin, async (req, res) => {
+    try {
+        const count = await Attendance.countDocuments({ eventId: req.params.eventId });
+        res.json({ count });
+    } catch (error) {
+        console.error('Error fetching attendance stats:', error);
+        res.status(500).json({ error: 'Server error' });
+    }
+});
+
 module.exports = router;
