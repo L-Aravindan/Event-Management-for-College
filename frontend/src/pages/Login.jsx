@@ -12,6 +12,7 @@ const Login = ({ onLogin }) => {
         role: 'student',
     });
     const [showPassword, setShowPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -24,6 +25,7 @@ const Login = ({ onLogin }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
         try {
             const response = await apiClient.post('/auth/login', formData);
             const token = response.data.token;
@@ -68,6 +70,8 @@ const Login = ({ onLogin }) => {
             } else {
                 alert('Login failed. Please check your credentials.');
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -154,6 +158,15 @@ const Login = ({ onLogin }) => {
                     </Link>
                 </p>
             </div>
+
+            {isLoading && (
+                <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[9999]">
+                    <div className="bg-black/50 p-8 rounded-xl flex flex-col items-center">
+                        <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mb-4"></div>
+                        <p className="text-white font-medium">Logging in...</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
