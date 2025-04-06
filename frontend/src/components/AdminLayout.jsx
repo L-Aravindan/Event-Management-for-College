@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Navbar from './Navbar'; // Import the Navbar component
+import Navbar from './Navbar'; 
 
 const AdminLayout = ({ onLogout }) => {
     const [adminInfo, setAdminInfo] = useState(null);

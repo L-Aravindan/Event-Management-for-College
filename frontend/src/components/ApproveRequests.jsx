@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import apiClient from '../services/api';
-import '../styles/ApproveRequests.css'; // Import the CSS file
+import '../styles/ApproveRequests.css'; 
 
 const ApproveRequests = ({ onLogout }) => {
     const [requests, setRequests] = useState([]);

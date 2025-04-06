@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import apiClient from '../services/api';
-import '../styles/DisplayMentoredStudents.css'; // Import the CSS file
+import '../styles/DisplayMentoredStudents.css'; 
 
 const DisplayMentoredStudents = ({ onLogout }) => {
     const [students, setStudents] = useState([]);

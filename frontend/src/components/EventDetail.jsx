@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useParams, useNavigate } from 'react-router-dom'; 
 import apiClient from '../services/api';
-import '../styles/EventDetail.css';
 import defaultEventImage from '../assets/logo-sm.svg';
 
 const EventDetail = () => {
-    const navigate = useNavigate(); // Initialize useNavigate
+    const navigate = useNavigate(); 
     const [event, setEvent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [hasApplied, setHasApplied] = useState(false);
     const [hasMarkedAttendance, setHasMarkedAttendance] = useState(false);
     const [attendanceCode, setAttendanceCode] = useState('');
+    const [requestStatus, setRequestStatus] = useState('none'); 
     const { eventId } = useParams();
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -35,11 +35,12 @@ const EventDetail = () => {
                 const eventResponse = await apiClient.get(`/events/${eventId}`);
                 setEvent(eventResponse.data);
                 
-                // Check if user has already applied
+                // Check if user has already applied and get request status
                 const userApplication = eventResponse.data.applicants.find(
                     applicant => applicant.studentId === user.id
                 );
                 setHasApplied(!!userApplication);
+                setRequestStatus(userApplication ? userApplication.status : 'none');
 
                 // Check attendance status
                 const attendanceResponse = await apiClient.get('/attendance', {
@@ -72,6 +73,7 @@ const EventDetail = () => {
             await apiClient.post(`/event-requests/${eventId}/apply`);
             alert('Application submitted successfully!');
             setHasApplied(true);
+            setRequestStatus('pending'); // Set initial status as pending after applying
         } catch (err) {
             console.error('Error applying for event:', err);
             alert(err.response?.data?.error || 'Failed to apply for the event');
@@ -125,12 +127,12 @@ const EventDetail = () => {
     if (!event) return <div className="error">Event not found</div>;
 
     return (
-        <div className="p-4 h-[calc(100vh-80px)] overflow-y-auto">
+        <div className="p-4 h-[calc(100vh-80px)] overflow-y-auto animate-fade-in">
             <div className="max-w-7xl mx-auto">
                 {/* Back Button */}
                 <button 
                     onClick={handleBack}
-                    className="group mb-6 px-4 py-2 bg-white/10 rounded-lg transition-all duration-300 hover:-translate-y-1 text-white/90 hover:text-white flex items-center gap-2 text-base"
+                    className="group mb-6 px-4 py-2 bg-white/10 rounded-lg transition-all duration-300 hover:-translate-y-1 text-white/90 hover:text-white flex items-center gap-2 text-base animate-slide-in"
                 >
                     <span className="transform transition-transform group-hover:-translate-x-1">←</span>
                     Back
@@ -214,22 +216,36 @@ const EventDetail = () => {
                                             Apply for Event
                                         </button>
                                     )}
-                                    {hasApplied && !hasMarkedAttendance && (
-                                        <div className="flex-1 space-y-4">
-                                            <input
-                                                type="text"
-                                                placeholder="Enter attendance code"
-                                                value={attendanceCode}
-                                                onChange={(e) => setAttendanceCode(e.target.value)}
-                                                className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
-                                            />
-                                            <button 
-                                                onClick={handleAttendance}
-                                                className="w-full bg-accent/20 hover:bg-accent/30 text-white rounded-lg py-3 transition-all duration-300 hover:-translate-y-1"
-                                            >
-                                                Mark Attendance
-                                            </button>
-                                        </div>
+                                    {hasApplied && (
+                                        <>
+                                            {requestStatus === 'pending' && (
+                                                <div className="w-full bg-yellow-500/20 text-yellow-300 rounded-lg p-4 text-center font-medium">
+                                                    Your request is pending approval
+                                                </div>
+                                            )}
+                                            {requestStatus === 'rejected' && (
+                                                <div className="w-full bg-red-500/20 text-red-300 rounded-lg p-4 text-center font-medium">
+                                                    Your request has been rejected
+                                                </div>
+                                            )}
+                                            {requestStatus === 'accepted' && !hasMarkedAttendance && (
+                                                <div className="flex-1 space-y-4">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Enter attendance code"
+                                                        value={attendanceCode}
+                                                        onChange={(e) => setAttendanceCode(e.target.value)}
+                                                        className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:border-white/50"
+                                                    />
+                                                    <button 
+                                                        onClick={handleAttendance}
+                                                        className="w-full bg-accent/20 hover:bg-accent/30 text-white rounded-lg py-3 transition-all duration-300 hover:-translate-y-1"
+                                                    >
+                                                        Mark Attendance
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                                 {hasMarkedAttendance && (
