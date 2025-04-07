@@ -1,29 +1,43 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register'; // Import the Register component
+
+// Only import components used for layout/routing/auth
 import FacultyLayout from './components/FacultyLayout';
-import StudentLayout from './components/StudentLayout'; // Import the StudentLayout component
-import AdminLayout from './components/AdminLayout'; // Import the AdminLayout component
-import AddEvents from './components/AddEvents';
-import ApproveRequests from './components/ApproveRequests';
-import AddMentoredStudents from './components/AddMentoredStudents';
-import DisplayMentoredStudents from './components/DisplayMentoredStudents';
-import DisplayEvents from './components/DisplayEvents';
-import StudentDashboard from './components/StudentDashboard';
-import ApprovalStatus from './components/ApprovalStatus';
-import EventsParticipated from './components/EventsParticipated';
-import StudentProfile from './components/StudentProfile'; // Import the StudentProfile component
-import FacultyProfile from './components/FacultyProfile'; // Import the FacultyProfile component
-import AdminDashboard from './components/AdminDashboard'; // Import the AdminDashboard component
-import ViewStudents from './components/ViewStudents'; // Import the ViewStudents component
-import ViewFaculties from './components/ViewFaculties'; // Import the ViewFaculties component
-import EventDetail from './components/EventDetail'; // Import the EventDetail component
-import FacultyEventDetail from './components/FacultyEventDetail'; // Import the FacultyEventDetail component
-import AdminEventDetail from './components/AdminEventDetail'; // Import the AdminEventDetail component
-import CalendarView from './components/CalendarView'; // Import the CalendarView component
-import AdminAnalytics from './components/AdminAnalytics'; // Import the AdminAnalytics component
-import StudentDetails from './components/StudentDetails';
+import StudentLayout from './components/StudentLayout';
+import AdminLayout from './components/AdminLayout';
+import Login from './pages/Login';
+import Register from './pages/Register';
+
+// Lazy load all other components
+const AddEvents = React.lazy(() => import('./components/AddEvents'));
+const ApproveRequests = React.lazy(() => import('./components/ApproveRequests'));
+const AddMentoredStudents = React.lazy(() => import('./components/AddMentoredStudents'));
+const DisplayMentoredStudents = React.lazy(() => import('./components/DisplayMentoredStudents'));
+const DisplayEvents = React.lazy(() => import('./components/DisplayEvents'));
+const StudentDashboard = React.lazy(() => import('./components/StudentDashboard'));
+const ApprovalStatus = React.lazy(() => import('./components/ApprovalStatus'));
+const EventsParticipated = React.lazy(() => import('./components/EventsParticipated'));
+const StudentProfile = React.lazy(() => import('./components/StudentProfile'));
+const FacultyProfile = React.lazy(() => import('./components/FacultyProfile'));
+const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
+const ViewStudents = React.lazy(() => import('./components/ViewStudents'));
+const ViewFaculties = React.lazy(() => import('./components/ViewFaculties'));
+const EventDetail = React.lazy(() => import('./components/EventDetail'));
+const FacultyEventDetail = React.lazy(() => import('./components/FacultyEventDetail'));
+const AdminEventDetail = React.lazy(() => import('./components/AdminEventDetail'));
+const CalendarView = React.lazy(() => import('./components/CalendarView'));
+const AdminAnalytics = React.lazy(() => import('./components/AdminAnalytics'));
+const StudentDetails = React.lazy(() => import('./components/StudentDetails'));
+
+// Loading fallback component
+const LoadingFallback = () => (
+    <div className="min-h-screen flex items-center justify-center">
+        <div className="bg-black/50 p-8 rounded-xl flex flex-col items-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-transparent mb-4"></div>
+            <p className="text-white font-medium">Loading...</p>
+        </div>
+    </div>
+);
 
 const App = () => {
     const [userRole, setUserRole] = useState(null);
@@ -59,65 +73,147 @@ const App = () => {
 
     return (
         <Router>
-            <Routes>
-                {/* Public Routes */}
-                <Route path="/" element={<Navigate to="/login" />} /> {/* Redirect root to login */}
-                <Route path="/login" element={<Login onLogin={handleLogin} />} />
-                <Route path="/register" element={<Register />} /> {/* Add Register route */}
+            <Suspense fallback={<LoadingFallback />}>
+                <Routes>
+                    {/* Public Routes */}
+                    <Route path="/" element={<Navigate to="/login" />} />
+                    <Route path="/login" element={<Login onLogin={handleLogin} />} />
+                    <Route path="/register" element={<Register />} />
 
-                {/* Student Routes */}
-                <Route
-                    path="/student/*"
-                    element={
-                        <ProtectedRoute role="student">
-                            <StudentLayout onLogout={handleLogout} />
-                        </ProtectedRoute>
-                    }
-                >
-                    <Route path="dashboard" element={<StudentDashboard onLogout={handleLogout} />} />
-                    <Route path="approval-status" element={<ApprovalStatus onLogout={handleLogout} />} />
-                    <Route path="events-participated" element={<EventsParticipated onLogout={handleLogout} />} />
-                    <Route path="profile" element={<StudentProfile onLogout={handleLogout} />} />
-                    <Route path="event/:eventId" element={<EventDetail />} />
-                    <Route path="calendar" element={<CalendarView />} />
-                </Route>
+                    {/* Student Routes */}
+                    <Route
+                        path="/student/*"
+                        element={
+                            <ProtectedRoute role="student">
+                                <StudentLayout onLogout={handleLogout} />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route path="dashboard" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <StudentDashboard onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="approval-status" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <ApprovalStatus onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="events-participated" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <EventsParticipated onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="profile" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <StudentProfile onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="event/:eventId" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <EventDetail />
+                            </Suspense>
+                        } />
+                        <Route path="calendar" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <CalendarView />
+                            </Suspense>
+                        } />
+                    </Route>
 
-                {/* Faculty Dashboard */}
-                <Route
-                    path="/faculty/*"
-                    element={
-                        <ProtectedRoute role="faculty">
-                            <FacultyLayout onLogout={handleLogout} />
-                        </ProtectedRoute>
-                    }
-                >
-                    <Route path="add-events" element={<AddEvents onLogout={handleLogout} />} />
-                    <Route path="approve-requests" element={<ApproveRequests onLogout={handleLogout} />} />
-                    <Route path="add-mentored-students" element={<AddMentoredStudents onLogout={handleLogout} />} />
-                    <Route path="display-mentored-students" element={<DisplayMentoredStudents onLogout={handleLogout} />} />
-                    <Route path="display-events" element={<DisplayEvents onLogout={handleLogout} />} />
-                    <Route path="profile" element={<FacultyProfile onLogout={handleLogout} />} /> {/* Add FacultyProfile route */}
-                    <Route path="event/:eventId" element={<FacultyEventDetail />} /> {/* Add FacultyEventDetail route */}
-                </Route>
+                    {/* Faculty Routes */}
+                    <Route
+                        path="/faculty/*"
+                        element={
+                            <ProtectedRoute role="faculty">
+                                <FacultyLayout onLogout={handleLogout} />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route path="add-events" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <AddEvents onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="approve-requests" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <ApproveRequests onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="add-mentored-students" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <AddMentoredStudents onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="display-mentored-students" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <DisplayMentoredStudents onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="display-events" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <DisplayEvents onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="profile" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <FacultyProfile onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="event/:eventId" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <FacultyEventDetail />
+                            </Suspense>
+                        } />
+                    </Route>
 
-                {/* Admin Dashboard */}
-                <Route
-                    path="/admin/*"
-                    element={
-                        <ProtectedRoute role="admin">
-                            <AdminLayout onLogout={handleLogout} />
-                        </ProtectedRoute>
-                    }
-                >
-                    <Route path="dashboard" element={<AdminDashboard onLogout={handleLogout} />} />
-                    <Route path="view-students" element={<ViewStudents onLogout={handleLogout} />} />
-                    <Route path="view-faculties" element={<ViewFaculties onLogout={handleLogout} />} />
-                    <Route path="analytics" element={<AdminAnalytics />} />
-                    <Route path="event/:eventId" element={<AdminEventDetail />} />
-                    <Route path="calendar" element={<CalendarView />} />
-                    <Route path="student/:studentId" element={<StudentDetails onLogout={handleLogout} />} />
-                </Route>
-            </Routes>
+                    {/* Admin Routes */}
+                    <Route
+                        path="/admin/*"
+                        element={
+                            <ProtectedRoute role="admin">
+                                <AdminLayout onLogout={handleLogout} />
+                            </ProtectedRoute>
+                        }
+                    >
+                        <Route path="dashboard" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <AdminDashboard onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="view-students" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <ViewStudents onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="view-faculties" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <ViewFaculties onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                        <Route path="analytics" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <AdminAnalytics />
+                            </Suspense>
+                        } />
+                        <Route path="event/:eventId" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <AdminEventDetail />
+                            </Suspense>
+                        } />
+                        <Route path="calendar" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <CalendarView />
+                            </Suspense>
+                        } />
+                        <Route path="student/:studentId" element={
+                            <Suspense fallback={<LoadingFallback />}>
+                                <StudentDetails onLogout={handleLogout} />
+                            </Suspense>
+                        } />
+                    </Route>
+                </Routes>
+            </Suspense>
         </Router>
     );
 };
