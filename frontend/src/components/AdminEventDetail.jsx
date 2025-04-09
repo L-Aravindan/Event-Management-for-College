@@ -24,7 +24,6 @@ const AdminEventDetail = () => {
     rejected: 0,
     attendanceMarked: 0,
   });
-  const [events, setEvents] = useState([]);
   const { eventId } = useParams();
 
   const isEventExpired = (eventDate, eventTime) => {
@@ -56,15 +55,6 @@ const AdminEventDetail = () => {
       }));
     } catch (err) {
       console.error("Error fetching event requests:", err);
-    }
-  };
-
-  const fetchEventsParticipated = async () => {
-    try {
-      const response = await apiClient.get(`/admin/events/${eventId}/participated`);
-      setEvents(response.data);
-    } catch (err) {
-      console.error("Error fetching events participated:", err);
     }
   };
 
@@ -105,7 +95,6 @@ const AdminEventDetail = () => {
       }
     };
     fetchData();
-    fetchEventsParticipated();
   }, [eventId]);
 
   const handleDelete = async () => {
@@ -163,19 +152,6 @@ const AdminEventDetail = () => {
       alert("Failed to update request");
     }
   };
-
-  const handleEventStatusChange = async (eventId, status) => {
-    try {
-      await apiClient.put(`/admin/events/${eventId}/status`, { status });
-      alert("Event status updated successfully!");
-      fetchEventsParticipated();
-    } catch (err) {
-      console.error("Error updating event status:", err);
-      alert("Failed to update event status");
-    }
-  };
-
-  
 
   if (loading) return <div className="loading">Loading...</div>;
   if (!event) return <div className="error">Event not found</div>;
@@ -236,60 +212,8 @@ const AdminEventDetail = () => {
                 </p>
               </div>
             </div>
-
-            {/* Events Participated */}
-            <div className="space-y-4">
-              <h3 className="text-xl text-white font-semibold mb-4">Events Participated</h3>
-              <div className="space-y-4 max-h-[calc(100vh-300px)] overflow-y-auto pr-2">
-                {events.length > 0 ? (
-                  events.map((event) => (
-                    <div 
-                      key={event._id}
-                      className={`bg-white/10 rounded-lg p-4 border border-white/10 ${
-                          event.hasAttendance ? 'border-green-500/30' : ''
-                      }`}
-                    >
-                      <h4 className="text-white font-medium mb-2">{event.name}</h4>
-                      <div className="space-y-2 text-sm">
-                        <p className="flex justify-between">
-                          <span className="text-white/60">Date:</span>
-                          <span className="text-white">
-                            {new Date(event.date).toLocaleDateString('en-GB')}
-                          </span>
-                        </p>
-                        <p className="flex justify-between items-center">
-                          <span className="text-white/60">Status:</span>
-                          <select
-                            value={event.status}
-                            onChange={(e) => handleEventStatusChange(event._id, e.target.value)}
-                            className="bg-white/10 border border-white/20 rounded-lg px-2 py-1 text-sm"
-                          >
-                            <option value="pending" className="bg-black text-yellow-300">Pending</option>
-                            <option value="approved" className="bg-black text-green-300">Approved</option>
-                            <option value="rejected" className="bg-black text-red-300">Rejected</option>
-                          </select>
-                        </p>
-                        <p className="flex justify-between items-center">
-                          <span className="text-white/60">Attendance:</span>
-                          <span className={`px-2 py-1 rounded-full text-xs ${
-                              event.hasAttendance 
-                                  ? 'bg-green-500/20 text-green-300' 
-                                  : 'bg-red-500/20 text-red-300'
-                          }`}>
-                              {event.hasAttendance ? 'Present' : 'Absent'}
-                          </span>
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="text-center text-white/60 bg-white/10 rounded-lg p-6">
-                    No events found
-                  </div>
-                )}
-              </div>
             </div>
-          </div>
+
 
           {/* Right Column - Event Details */}
           <div className="lg:col-span-7">

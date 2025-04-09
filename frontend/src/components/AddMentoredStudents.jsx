@@ -6,9 +6,11 @@ const AddMentoredStudents = ({ onLogout }) => {
     const [formData, setFormData] = useState({
         registerNumber: '',
         purpose: '',
-        duration: '',
+        fromDate: '',
+        toDate: '',
     });
     const [studentExists, setStudentExists] = useState(true);
+    const [dateError, setDateError] = useState('');
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -24,10 +26,26 @@ const AddMentoredStudents = ({ onLogout }) => {
         }
     };
 
+    const validateDates = () => {
+        if (formData.fromDate && formData.toDate) {
+            const from = new Date(formData.fromDate);
+            const to = new Date(formData.toDate);
+            if (to < from) {
+                setDateError('End date cannot be before start date');
+                return false;
+            }
+        }
+        setDateError('');
+        return true;
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!studentExists) {
             alert('Student with this register number does not exist.');
+            return;
+        }
+        if (!validateDates()) {
             return;
         }
         try {
@@ -36,12 +54,17 @@ const AddMentoredStudents = ({ onLogout }) => {
                 alert('You must be logged in to add a mentored student.');
                 return;
             }
-            await apiClient.post('/mentorships', formData, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            await apiClient.post('/mentorships', formData);
             alert('Student added to mentorship list');
+            // Clear form after successful submission
+            setFormData({
+                registerNumber: '',
+                purpose: '',
+                fromDate: '',
+                toDate: '',
+            });
         } catch (err) {
-            alert('Failed to add student');
+            alert(err.response?.data?.error || 'Failed to add student');
         }
     };
 
@@ -83,14 +106,34 @@ const AddMentoredStudents = ({ onLogout }) => {
                         className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white placeholder-white/50 focus:outline-none focus:border-white/30"
                     />
 
-                    <input
-                        type="date"
-                        name="duration"
-                        value={formData.duration}
-                        onChange={handleChange}
-                        required
-                        className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-white/30"
-                    />
+                    <div className="grid grid-cols-2 gap-4">
+                        <div>
+                            <label className="block text-white/60 text-sm mb-1">From Date</label>
+                            <input
+                                type="date"
+                                name="fromDate"
+                                value={formData.fromDate}
+                                onChange={handleChange}
+                                required
+                                className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-white/30"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-white/60 text-sm mb-1">To Date</label>
+                            <input
+                                type="date"
+                                name="toDate"
+                                value={formData.toDate}
+                                onChange={handleChange}
+                                required
+                                min={formData.fromDate}
+                                className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-white focus:outline-none focus:border-white/30"
+                            />
+                        </div>
+                    </div>
+                    {dateError && (
+                        <p className="text-red-400 text-sm">{dateError}</p>
+                    )}
 
                     <button
                         type="submit"

@@ -6,6 +6,7 @@ const DisplayMentoredStudents = ({ onLogout }) => {
     const [students, setStudents] = useState([]);
     const [searchRegisterNumber, setSearchRegisterNumber] = useState('');
     const [filteredStudents, setFilteredStudents] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchStudents = async () => {
@@ -41,10 +42,41 @@ const DisplayMentoredStudents = ({ onLogout }) => {
         setFilteredStudents(students);
     };
 
-    const getStatus = (duration) => {
-        const endDate = new Date(duration);
+    const getStatus = (fromDate, toDate) => {
         const currentDate = new Date();
-        return currentDate > endDate ? 'Completed' : 'Ongoing';
+        const startDate = new Date(fromDate);
+        const endDate = new Date(toDate);
+        
+        if (currentDate < startDate) return 'Upcoming';
+        if (currentDate > endDate) return 'Completed';
+        return 'Ongoing';
+    };
+
+    const handleRemoveStudent = async (mentorship) => {
+        if (!window.confirm('Are you sure you want to remove this student from your mentorship list?')) {
+            return;
+        }
+
+        setIsLoading(true);
+        try {
+            await apiClient.delete(`/mentorships/${mentorship._id}`);
+
+            // Update local state after successful deletion
+            const updatedStudents = students.filter(s => s._id !== mentorship._id);
+            setStudents(updatedStudents);
+            setFilteredStudents(filteredStudents.filter(s => s._id !== mentorship._id));
+            
+            alert('Student removed successfully');
+        } catch (err) {
+            console.error('Failed to remove student:', err);
+            if (err.response?.data?.error) {
+                alert(err.response.data.error);
+            } else {
+                alert('Failed to remove student. Please try again.');
+            }
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -96,18 +128,31 @@ const DisplayMentoredStudents = ({ onLogout }) => {
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-white/60">Duration:</span>
-                                        <span>{new Date(student.duration).toLocaleDateString('en-GB')}</span>
+                                        <span>
+                                            {new Date(student.fromDate).toLocaleDateString('en-GB')} 
+                                            {' - '}
+                                            {new Date(student.toDate).toLocaleDateString('en-GB')}
+                                        </span>
                                     </p>
                                     <p className="flex justify-between">
                                         <span className="text-white/60">Status:</span>
                                         <span className={`px-2 py-0.5 rounded-full text-xs ${
-                                            getStatus(student.duration) === 'Completed' 
+                                            getStatus(student.fromDate, student.toDate) === 'Completed' 
                                                 ? 'bg-green-500/20 text-green-300'
+                                                : getStatus(student.fromDate, student.toDate) === 'Upcoming'
+                                                ? 'bg-blue-500/20 text-blue-300'
                                                 : 'bg-yellow-500/20 text-yellow-300'
                                         }`}>
-                                            {getStatus(student.duration)}
+                                            {getStatus(student.fromDate, student.toDate)}
                                         </span>
                                     </p>
+                                    <button
+                                        onClick={() => handleRemoveStudent(student)}
+                                        disabled={isLoading}
+                                        className="w-full mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-all duration-300 hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        {isLoading ? 'Removing...' : 'Remove Student'}
+                                    </button>
                                 </div>
                             </div>
                         ))}

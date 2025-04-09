@@ -6,7 +6,8 @@ const mentorshipSchema = new mongoose.Schema({
     registerNumber: { type: Number, required: true }, // Register Number
     name: { type: String, required: true }, // Student Name
     purpose: { type: String, required: true }, // Purpose
-    duration: { type: Date, required: true }, // Duration (end date)
+    fromDate: { type: Date, required: true }, // Start Date
+    toDate: { type: Date, required: true } // End Date
 });
 
 module.exports = mongoose.model('Mentorship', mentorshipSchema);

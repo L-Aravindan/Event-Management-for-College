@@ -23,7 +23,7 @@ const isAdmin = (req, res, next) => {
 
 // 1. Add a Student to Faculty's Mentorship List (Protected route for faculty)
 router.post('/', authMiddleware, isFaculty, async (req, res) => {
-    const { registerNumber, purpose, duration } = req.body;
+    const { registerNumber, purpose, fromDate, toDate } = req.body;
 
     try {
         // Check if the student exists
@@ -41,21 +41,29 @@ router.post('/', authMiddleware, isFaculty, async (req, res) => {
             return res.status(400).json({ error: 'This student is already in your mentorship list' });
         }
 
+        // Validate dates
+        const startDate = new Date(fromDate);
+        const endDate = new Date(toDate);
+        if (endDate < startDate) {
+            return res.status(400).json({ error: 'End date cannot be before start date' });
+        }
+
         // Create a new mentorship record
         const newMentorship = new Mentorship({
             facultyId: req.user.id,
             studentId: student._id,
             registerNumber,
-            name: student.name, // Retrieve the student's name
+            name: student.name,
             purpose,
-            duration,
+            fromDate: startDate,
+            toDate: endDate
         });
 
         await newMentorship.save();
         res.status(201).json(newMentorship);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Server error' });
+        console.error('Error creating mentorship:', error);
+        res.status(500).json({ error: error.message || 'Server error while creating mentorship' });
     }
 });
 
@@ -72,7 +80,7 @@ router.delete('/:id', authMiddleware, isFaculty, async (req, res) => {
             return res.status(403).json({ error: 'You are not authorized to remove this student' });
         }
 
-        await mentorship.remove();
+        await Mentorship.findByIdAndDelete(req.params.id); // Changed from remove() to findByIdAndDelete()
         res.json({ message: 'Student removed from mentorship list successfully' });
     } catch (error) {
         console.error(error);
